@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vice Cover Studio — make your own sunset cover art</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-sun" aria-hidden="true"></span>
+    <div>
+      <h1>Vice Cover Studio</h1>
+      <p>Turn your photo + a caption into poster cover art. Your photos never leave this machine.</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="shuffleButton" type="button" title="Shuffle layout and colour grade">Shuffle look</button>
+    <button id="resetButton" type="button" title="Start over with the sample photo">Reset</button>
+  </div>
+</header>
+
+<main class="workspace">
+  <section class="preview-pane" aria-label="Cover preview">
+    <div class="canvas-wrap">
+      <canvas id="previewCanvas" width="900" height="900"></canvas>
+      <p id="statusLine" class="status" role="status">Load a photo to begin — or try a sample below.</p>
+    </div>
+    <div class="export-row">
+      <fieldset class="size-picker">
+        <legend>Export size</legend>
+        <label><input type="radio" name="exportSize" value="1080x1080" checked> 1080 × 1080</label>
+        <label><input type="radio" name="exportSize" value="1080x1350"> 1080 × 1350</label>
+        <label><input type="radio" name="exportSize" value="1920x1080"> 1920 × 1080</label>
+      </fieldset>
+      <button id="exportButton" type="button" class="export-button">Export PNG</button>
+    </div>
+    <p class="hint">Tip: click a panel in the preview to select it, then drag inside it to reposition the photo.</p>
+  </section>
+
+  <aside class="controls" aria-label="Cover controls">
+    <section class="control-block" id="photoBlock">
+      <h2>1 · Photos</h2>
+      <label class="dropzone" id="photoDrop">
+        <span>Drop photos here or <strong>browse your files</strong></span>
+        <input id="photoInput" type="file" accept="image/*" multiple hidden>
+      </label>
+      <div class="sample-row">
+        <span>No photo handy? Try a sample:</span>
+        <button type="button" class="sample-button" data-sample="samples/sunset-rider.jpg">Sunset rider</button>
+        <button type="button" class="sample-button" data-sample="samples/neon-street.jpg">Neon street</button>
+      </div>
+      <ul id="photoList" class="photo-list" aria-label="Loaded photos"></ul>
+    </section>
+
+    <section class="control-block">
+      <h2>2 · Layout</h2>
+      <div class="layout-choices" id="layoutChoices" role="radiogroup" aria-label="Panel layout">
+        <button type="button" data-layout="hero" aria-pressed="true" title="One full-bleed photo">
+          <span class="layout-glyph layout-hero"></span>Hero
+        </button>
+        <button type="button" data-layout="split3" aria-pressed="false" title="Three vertical panels">
+          <span class="layout-glyph layout-split3"></span>Triple split
+        </button>
+        <button type="button" data-layout="heroStrip" aria-pressed="false" title="Big panel over two small ones">
+          <span class="layout-glyph layout-herostrip"></span>Hero + strip
+        </button>
+        <button type="button" data-layout="grid" aria-pressed="false" title="Four equal panels">
+          <span class="layout-glyph layout-grid"></span>Four-way grid
+        </button>
+      </div>
+      <p class="field-note">Each panel can hold its own photo — or the same photo across all of them.</p>
+    </section>
+
+    <section class="control-block">
+      <h2>3 · Panels</h2>
+      <p class="field-note">Pick a panel, then crop and position its photo.</p>
+      <div id="panelList" class="panel-list"></div>
+    </section>
+
+    <section class="control-block">
+      <h2>4 · Caption</h2>
+      <label class="field">
+        <span>Title</span>
+        <input id="titleInput" type="text" value="SUNSET HEIST" maxlength="28" autocomplete="off">
+      </label>
+      <label class="field">
+        <span>Tagline</span>
+        <input id="taglineInput" type="text" value="One last job under the neon sun" maxlength="60" autocomplete="off">
+      </label>
+      <label class="field">
+        <span>Footer</span>
+        <input id="footerInput" type="text" value="VICE CITY · SUMMER" maxlength="48" autocomplete="off">
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>Caption spot</span>
+          <select id="captionSpot">
+            <option value="bottom" selected>Bottom band</option>
+            <option value="top">Top band</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Title size</span>
+          <input id="titleSize" type="range" min="70" max="130" value="100">
+        </label>
+      </div>
+    </section>
+
+    <section class="control-block">
+      <h2>5 · Colour grade</h2>
+      <div class="grade-choices" id="gradeChoices" role="radiogroup" aria-label="Colour grade">
+        <button type="button" data-grade="sunset" aria-pressed="true" title="Pink-orange Vice sunset">
+          <span class="grade-swatch grade-sunset"></span>Sunset
+        </button>
+        <button type="button" data-grade="neon" aria-pressed="false" title="Purple and cyan neon night">
+          <span class="grade-swatch grade-neon"></span>Neon night
+        </button>
+        <button type="button" data-grade="gold" aria-pressed="false" title="Warm gold hour">
+          <span class="grade-swatch grade-gold"></span>Gold hour
+        </button>
+        <button type="button" data-grade="noir" aria-pressed="false" title="High-contrast black and white">
+          <span class="grade-swatch grade-noir"></span>Noir
+        </button>
+      </div>
+    </section>
+  </aside>
+</main>
+
+<footer class="footnote">
+  <p>Vice Cover Studio is an original design. It uses no Rockstar Games logo, artwork or font.
+  Lettering: Anton and Barlow Condensed, both under the SIL Open Font License (see <a href="fonts/OFL.txt">fonts/OFL.txt</a>).
+  Sample pictures are original illustrations drawn for this app.</p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
