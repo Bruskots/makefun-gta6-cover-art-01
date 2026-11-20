@@ -8,7 +8,7 @@
 //   MAKEFUN_OUTPUT_DIR=out node main.ts
 // Outside the grader, MAKEFUN_OUTPUT_DIR stands in for /output.
 
-import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildDossier } from "./vendor/makefun-app.ts";
@@ -34,8 +34,23 @@ const dossierCaps = {
 
 function handIn() {
   // Start from a clean output folder so a stale file can never leak in.
-  rmSync(outDir, { recursive: true, force: true });
+  // Clear the folder's contents, never the folder itself: the grader mounts
+  // /output as its own filesystem, and deleting a mount point fails with
+  // EBUSY (as root) or EPERM (as the grader's unprivileged user), which
+  // aborts the run with exit code 1 before anything is handed in. That
+  // was the previous submission's failure. Removing each entry inside the
+  // folder gives the same clean slate without touching the mount itself.
   mkdirSync(outDir, { recursive: true });
+  for (const entry of readdirSync(outDir)) {
+    // Best effort only: a stale entry owned by someone else may refuse
+    // to be removed, and that must never fail the hand-in — the grader
+    // always hands us an empty /output, so there is nothing to clear there.
+    try {
+      rmSync(join(outDir, entry), { recursive: true, force: true });
+    } catch {
+      // Leave the undeletable entry alone and carry on.
+    }
+  }
 
   const appSource = join(repoRoot, "app");
   const shotsSource = join(repoRoot, "screenshots");
